@@ -1,0 +1,29 @@
+framework:
+    workflows:
+        job:
+            type: 'state_machine'
+            marking_store:
+                type: 'single_state'
+                arguments:
+                    - 'status'
+            supports:
+                - CoreBundle\Entity\Job
+            places:
+                - new
+                - in_progress
+                - impossible
+                - completed
+                - rejected
+            transitions:
+                take_to_work:
+                    from: new
+                    to: in_progress
+                complete:
+                    from: [in_progress, rejected]
+                    to: completed
+                impossible:
+                    from: [new, in_progress]
+                    to: impossible
+                reject:
+                    from: [completed, impossible]
+                    to: rejected

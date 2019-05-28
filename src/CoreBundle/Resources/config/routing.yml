@@ -1,0 +1,15 @@
+job_reject:
+    path: /job/{jobId}/reject
+    defaults: { _controller: CoreBundle:Job:reject}
+    requirements:
+        jobId: '\d+'
+    options:
+        expose: true
+
+job_do:
+    path: job/{jobId}/do
+    defaults: { _controller: CoreBundle:Job:do}
+    requirements:
+        jobId: '\d+'
+    options:
+        expose: true

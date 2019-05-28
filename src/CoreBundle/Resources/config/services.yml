@@ -1,0 +1,32 @@
+imports:
+    - { resource: "@CoreBundle/Resources/config/voters.yml" }
+
+services:
+
+    core.event_listener.site_url_subscriber:
+        class: UserBundle\EventListener\SiteUrlSubscriber
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    core.service.job:
+        class: CoreBundle\Services\JobService
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@core.service.transaction"
+            - "@state_machine.job"
+            - "@security.helper"
+            -
+    core.event_listener.workflow.job:
+        class: CoreBundle\EventListener\Workflow\JobListener
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@state_machine.job"
+            - "@core.service.transaction"
+            - "@core.service.job"
+        tags:
+            - { name: kernel.event_listener, event: workflow.job.transition.take_to_work, method: onTakeToWork }
+            - { name: kernel.event_listener, event: workflow.job.transition.complete, method: onComplete }
+            - { name: kernel.event_listener, event: workflow.job.transition.impossible, method: onImpossible }
+            - { name: kernel.event_listener, event: workflow.job.transition.reject, method: onReject }
+

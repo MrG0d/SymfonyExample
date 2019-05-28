@@ -1,0 +1,13 @@
+services:
+    core.voter.job:
+        class: CoreBundle\Security\JobVoter
+        arguments:
+            - "@security.access.decision_manager"
+            - "@core.service.access_manager"
+            - 'CoreBundle\Entity\Job'
+            - [
+                'CoreBundle\Security\ExchangePropositionVoter::ACTION_DO',
+                'CoreBundle\Security\ExchangePropositionVoter::ACTION_REJECT'
+            ]
+        tags:
+            - { name: 'security.voter' }
